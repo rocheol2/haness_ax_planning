@@ -1,0 +1,6 @@
+# 실행 중 생성되는 산출물
+_workspace/
+
+# 배포용 임시 파일
+ax-planning-harness.zip
+hwpx-autofill-conversion.skill
