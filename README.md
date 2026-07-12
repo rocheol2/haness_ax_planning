@@ -42,6 +42,72 @@ GitHub 저장소: <https://github.com/rocheol2/haness_ax_planning>
 
 ## 3. AI Agent 업무 처리 구조
 
+### Agent 구조도
+
+```mermaid
+graph LR
+    User[사용자 요청<br/>행사 유형·목적·대상·예산·일정] --> Orchestrator[ax-planning-report<br/>오케스트레이터]
+
+    Orchestrator --> Input[00_input.md<br/>요구사항 정리]
+    Orchestrator --> Manifest[run_manifest.md<br/>실행 상태 추적]
+
+    Input --> Collector[data-collector<br/>AX 트렌드·벤치마크 리서처]
+    Collector --> Research[01_research.md<br/>리서치 보고서]
+
+    Research --> Analyst[analyst<br/>기획 전략가]
+    Input --> Analyst
+    Analyst --> Strategy[02_planning_strategy.md<br/>기획 전략]
+
+    Strategy --> Visualizer[visualizer<br/>표·도식 설계자]
+    Visualizer --> Visuals[03_visual_elements.md<br/>시간표·예산표·일정표]
+
+    Research --> Writer[report-writer<br/>개조식 보고서 집필자]
+    Strategy --> Writer
+    Visuals --> Writer
+    Writer --> Report[04_planning_report.md<br/>기획 보고서]
+    Writer --> Commentary[05_report_commentary.md<br/>작성 의미 해설]
+
+    Research --> Reviewer[executive-summarizer<br/>상급자 관점 검증자]
+    Strategy --> Reviewer
+    Visuals --> Reviewer
+    Report --> Reviewer
+    Commentary --> Reviewer
+    Reviewer --> QA[06_executive_qa.md<br/>예상 질의·검증 보고서]
+
+    QA --> Output[최종 산출물 보고]
+    Report --> HWPX[선택: 07_final.hwpx<br/>한글 양식 변환]
+```
+
+### 처리 프로세스도
+
+```mermaid
+flowchart TD
+    A[입력<br/>사용자 요청·첨부 자료·hwpx 양식] --> B{필수 정보 확인}
+    B -->|충분함| C[00_input.md 작성]
+    B -->|유형·목적·대상 누락| B1[사용자 확인 또는 기본값 적용]
+    B1 --> C
+
+    C --> D[run_manifest.md 생성<br/>실행 모드·파일 상태 추적]
+    D --> E[처리 1: 리서치<br/>data-collector]
+    E --> F[처리 2: 기획 전략<br/>analyst]
+    F --> G[처리 3: 표·도식 설계<br/>visualizer]
+    G --> H[처리 4: 보고서 집필<br/>report-writer]
+    H --> I[검증<br/>executive-summarizer]
+
+    I --> J{필수 수정 있음?}
+    J -->|있음| K[FIX-001 형식 수정요청 생성]
+    K --> L[담당 Agent 재작업]
+    L --> M[run_manifest.md 수정 이력 갱신]
+    M --> I
+
+    J -->|없음| N{hwpx 양식 제공?}
+    N -->|예| O[hwpx-autofill-conversion<br/>XML 분석·양식 채움·검증]
+    O --> P[07_final.hwpx 생성]
+    N -->|아니오| Q[Markdown 산출물 확정]
+    P --> R[출력<br/>최종 파일 목록 사용자 보고]
+    Q --> R
+```
+
 ```text
 입력
   사용자 요청, 기존 자료, hwpx 양식
